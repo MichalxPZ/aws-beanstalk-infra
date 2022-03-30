@@ -1,0 +1,8 @@
+Resources:
+  ZielmiBucket:  
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: !Sub "zielmi-${AWS::AccountId}-${AWS::Region}"
+      AccessControl: "PublicRead"
+      WebsiteConfiguration:
+        IndexDocument: "index.html"

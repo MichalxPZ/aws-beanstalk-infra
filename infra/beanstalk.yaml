@@ -1,0 +1,34 @@
+# BeanStalk infrastructure to deploy a Python Backend service
+# Deploys several instances of the service to provide better scaling and preventing us from errors on app
+# Auto scaling - feature that creates new instances on demand
+# Certificate Manager - can provide load balancer with a certificate so our app doesnt have to know anything about connection certificate
+Parameters:
+  InstanceProfile:
+    Type: String
+
+Resources:
+  MyApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties: 
+      ApplicationName: "zielmi-beamstalk-service"
+  MyEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref MyApplication                # !Sub "${MyApplication}" #Link to MyApplication
+      SolutionStackName: "64bit Amazon Linux 2 v3.3.11 running Python 3.8"
+      OptionSettings:
+        - Namespace: "aws:ec2:instances"
+          OptionName: "InstanceTypes"
+          Value: "t3.micro"
+        - Namespace: "aws:ec2:vpc"
+          OptionName: "VPCId"
+          Value: "vpc-0c1fc5ff007f615f1"
+        - Namespace: "aws:ec2:vpc"
+          OptionName: "Subnets"
+          Value: "subnet-0df3da0d5065daf8d"
+        - Namespace: "aws:ec2:vpc"
+          OptionName: "ELBSubnets"
+          Value: "subnet-034c408bee8d4dc61"
+        - Namespace: "aws:autoscaling:launchconfiguration"
+          OptionName: "IamInstanceProfile"
+          Value: !Ref InstanceProfile
